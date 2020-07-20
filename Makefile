@@ -30,15 +30,13 @@ watch : watch.o
 
 # Since the C example uses the C++ library underneath, which depends on C++
 # runtime stuff, you still have to also link -lstdc++
-c-example : c-example.o $(RGB_LIBRARY)
-	$(CC) $< -o $@ $(LDFLAGS) -lstdc++
-
 %.o : %.cc
 	$(CXX) -I$(RGB_INCDIR) $(CXXFLAGS) -c -o $@ $<
 
 %.o : %.c
 	$(CC) -I$(RGB_INCDIR) $(CFLAGS) -c -o $@ $<
 
+.PHONY : clean
 clean:
 	rm -f $(OBJECTS) $(BINARIES)
 

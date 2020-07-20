@@ -44,12 +44,12 @@ static int usage(const char *progname)
 
     return 1;
 }
-
+/*
 static bool parseColor(Color *c, const char *str)
 {
     return sscanf(str, "%hhu,%hhu,%hhu", &c->r, &c->g, &c->b) == 3;
 }
-
+*/
 static bool FullSaturation(const Color &c)
 {
     return (c.r == 0 || c.r == 255) && (c.g == 0 || c.g == 255) && (c.b == 0 || c.b == 255);
@@ -59,6 +59,17 @@ int main(int argc, char *argv[])
 {
     RGBMatrix::Options matrix_options;
     rgb_matrix::RuntimeOptions runtime_opt;
+
+    matrix_options.rows = 32;
+    matrix_options.cols = 64;
+    matrix_options.chain_length = 2;
+    matrix_options.parallel = 1;
+    matrix_options.pixel_mapper_config = "U-mapper";
+    matrix_options.brightness = 50;
+    matrix_options.multiplexing = 0;
+
+    runtime_opt.gpio_slowdown = 2;
+
     if (!rgb_matrix::ParseOptionsFromFlags(&argc, &argv,
                                            &matrix_options, &runtime_opt))
     {
@@ -69,7 +80,7 @@ int main(int argc, char *argv[])
     Color color(255, 255, 255);
     Color bg_color(0, 0, 0);
     Color outline_color(0, 0, 0);
-    bool with_outline = false;
+    //bool with_outline = false;
 
     const char *bdf_font_file_time = "fonts/digital_time.bdf";
     const char *bdf_font_file_date = "fonts/digital_date.bdf";
@@ -135,23 +146,27 @@ int main(int argc, char *argv[])
         strftime(date_buffer, sizeof(date_buffer), date_format, &tm);
         offscreen->Fill(bg_color.r, bg_color.g, bg_color.b);
 
-	//get length of text to centralize and put color to 0 0 0
+        //get length of text to center and put color to 0 0 0
         int length = rgb_matrix::DrawText(offscreen, font_time, x1, y1,
                                           bg_color, NULL, time_buffer,
                                           letter_spacing);
 
+        //calculate startposition for time on x axis
         x1 = (64 - length) / 2;
+
         rgb_matrix::DrawText(offscreen, font_time, x1, y1 + 3 + font_time.baseline(),
                              color, NULL, time_buffer,
                              letter_spacing);
 
-	//get length of text to centralize and put color to 0 0 0
+        //get length of text to centralize and put color to 0 0 0
         length = DrawText(offscreen, font_date, x2, y2 + 8,
                           bg_color, NULL, date_buffer,
                           letter_spacing);
 
+        //calculate startposition for date on x axis
         x2 = (64 - length) / 2;
-        //y2+8 to centralize the text
+
+        //y2+8 to center the text
         rgb_matrix::DrawText(offscreen, font_date, x2, y2 + 8 + font_date.baseline(),
                              color, NULL, date_buffer,
                              letter_spacing);
