@@ -2,4 +2,5 @@
 *.o
 *.save
 watch
+watch_gifs
 led-image-viewer
