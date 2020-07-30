@@ -1,5 +1,5 @@
 #ignore output files
 *.o
 *.save
-/home/watch/DigitalLEDWatch/watch
-/home/watch/DigitalLEDWatch/led-image-viewer
+watch
+led-image-viewer
