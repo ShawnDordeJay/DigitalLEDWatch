@@ -1,2 +1,4 @@
 #ignore output files
 *.o
+watch
+led-image-viewer

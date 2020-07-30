@@ -1,8 +1,8 @@
 
 CFLAGS=-Wall -O3 -g -Wextra -Wno-unused-parameter
 CXXFLAGS=$(CFLAGS)
-OBJECTS=watch.o led-image-viewer.o
-BINARIES=watch led-image-viewer
+OBJECTS=watch.o
+BINARIES=watch
 
 # Where our library resides. You mostly only need to change the
 # RGB_LIB_DISTRIBUTION, this is where the library is checked out.
@@ -25,10 +25,7 @@ $(RGB_LIBRARY): FORCE
 	$(MAKE) -C $(RGB_LIBDIR)
 
 watch : watch.o $(RGB_LIBRARY)
-	$(CXX) $(CXXFLAGS) watch.o -o $@ $(LDFLAGS) $(MAGICK_LDFLAGS)
-
-led-image-viewer: led-image-viewer.o $(RGB_LIBRARY)
-	$(CXX) $(CXXFLAGS) led-image-viewer.o -o $@ $(LDFLAGS) $(MAGICK_LDFLAGS)
+	$(CXX) $(CXXFLAGS) watch.o -o $@ $(LDFLAGS) $(AV_LDFLAGS)
 
 # All the binaries that have the same name as the object file.q
 % : %.o $(RGB_LIBRARY)
@@ -40,14 +37,9 @@ led-image-viewer: led-image-viewer.o $(RGB_LIBRARY)
 %.o : %.cc
 	$(CXX) -I$(RGB_INCDIR) $(CXXFLAGS) -c -o $@ $<
 
-%.o : %.c
-	$(CC) -I$(RGB_INCDIR) $(CFLAGS) -c -o $@ $<
-
-led-image-viewer.o : led-image-viewer.cc
-	$(CXX) -I$(RGB_INCDIR) $(CXXFLAGS) $(MAGICK_CXXFLAGS) -c -o $@ $<
-
+.PHONY : clean
 clean:
-	rm -f $(OBJECTS) $(BINARIES) $(OPTIONAL_OBJECTS) $(OPTIONAL_BINARIES)
+	rm -f $(OBJECTS) $(BINARIES)
 
 FORCE:
 .PHONY: FORCE
