@@ -122,8 +122,8 @@ int main(int argc, char *argv[])
   Color outline_color(0, 0, 0);
   //bool with_outline = false;
 
-  const char *bdf_font_file_time = "/home/watch/DigitalLEDWatch/fonts/digital_time.bdf";
-  const char *bdf_font_file_date = "/home/watch/DigitalLEDWatch/fonts/digital_date.bdf";
+  const char *bdf_font_file_time = "/home/pi/DigitalLEDWatch/fonts/digital_time.bdf";
+  const char *bdf_font_file_date = "/home/pi/DigitalLEDWatch/fonts/digital_date.bdf";
   int x1_orig = 0;
   int y1_orig = 0;
   int x2_orig = 0;
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
                                       letter_spacing);
 
     //calculate startposition for time on x axis
-    x1 = (64 - length) / 2;
+    x1 = ((64 - length) / 2) + 1;
 
     rgb_matrix::DrawText(offscreen, font_time, x1, y1 + 3 + font_time.baseline(),
                          color, NULL, time_buffer,
