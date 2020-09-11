@@ -1,8 +1,8 @@
 
 CFLAGS=-Wall -O3 -g -Wextra -Wno-unused-parameter
 CXXFLAGS=$(CFLAGS)
-OBJECTS=watch.o led-image-viewer.o watch_gifs.o
-BINARIES=watch led-image-viewer watch_gifs
+OBJECTS=watch.o led-image-viewer.o
+BINARIES=watch led-image-viewer
 
 # Where our library resides. You mostly only need to change the
 # RGB_LIB_DISTRIBUTION, this is where the library is checked out.
@@ -25,8 +25,6 @@ $(RGB_LIBRARY): FORCE
 	$(MAKE) -C $(RGB_LIBDIR)
 
 watch : watch.o $(RGB_LIBRARY)
-
-watch_gifs : watch_gifs.o $(RGB_LIBRARY)
 
 led-image-viewer: led-image-viewer.o $(RGB_LIBRARY)
 	$(CXX) $(CXXFLAGS) led-image-viewer.o -o $@ $(LDFLAGS) $(MAGICK_LDFLAGS)

@@ -294,6 +294,8 @@ int main(int argc, char *argv[])
   bool do_center = false;
   bool do_shuffle = false;
 
+  int brightness = 50;
+
   // We remember ImageParams for each image, which will change whenever
   // there is a flag modifying them. This map keeps track of filenames
   // and their image params (also for unrelated elements of argv[], but doesn't
@@ -403,6 +405,9 @@ int main(int argc, char *argv[])
 
   printf("Size: %dx%d. Hardware gpio mapping: %s\n",
          matrix->width(), matrix->height(), matrix_options.hardware_mapping);
+
+  // set brightness to 50% -> pre-set by me
+  matrix->SetBrightness(brightness);
 
   // These parameters are needed once we do scrolling.
   const bool fill_width = false;
