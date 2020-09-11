@@ -1,6 +1,6 @@
 #ignore output files
 *.o
 *.save
+*.out
 watch
-watch_gifs
 led-image-viewer
