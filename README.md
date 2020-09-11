@@ -20,3 +20,4 @@ logic for date, time and filename
   <li>filename is the name of the file to display</li>
  <ul>
   
+In case, there is a match witch current date/time with entry in database, first service/daemon is stopped, pics and gifs are displayed for 15 seconds, service/daemon is started again. Seconds are not considered at all.
