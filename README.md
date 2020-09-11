@@ -5,7 +5,7 @@ most of this code is copied from https://github.com/hzeller/rpi-rgb-led-matrix e
 
 watch.cc -> only watch function. is implemented as service/daemon. in case init_watch.py is killed, watch is still displaying time.
 led-image-viewer.cc -> only to display pictures and gifs. 
-init_watch.py -> contains functions to connect to database and function to activate watch or led-image-viewer
+init_watch.py -> contains functions to connect to database and function to activate watch or led-image-viewer. Is executed with nohup, therefore the python script is allowed to run in the background
 
 Created a database with columns date, time and filename.
 
@@ -21,3 +21,5 @@ logic for date, time and filename
  </ul>
   
 In case, there is a match witch current date/time with entry in database, first service/daemon is stopped, pics and gifs are displayed for 15 seconds, service/daemon is started again. Seconds are not considered at all.
+
+<b>Everything has to be executed as root.</b>
