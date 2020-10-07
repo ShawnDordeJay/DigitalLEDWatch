@@ -44,57 +44,11 @@ static int usage(const char *progname)
 
   return 1;
 }
-/*
-static bool parseColor(Color *c, const char *str)
-{
-    return sscanf(str, "%hhu,%hhu,%hhu", &c->r, &c->g, &c->b) == 3;
-}
-*/
+
 static bool FullSaturation(const Color &c)
 {
   return (c.r == 0 || c.r == 255) && (c.g == 0 || c.g == 255) && (c.b == 0 || c.b == 255);
 }
-
-/*
-static int exec_prog(const char **my_argv)
-{
-
-  pid_t my_pid;
-  int status, timeout; //unused ifdef WAIT_FOR_COMPLETION
-
-  if (0 == (my_pid = fork()))
-  {
-    if (-1 == execve(my_argv[0], (char **)my_argv, NULL))
-    {
-      perror("child process execve failed [%m]");
-      return -1;
-    }
-  }
-
-#ifdef WAIT_FOR_COMPLETION
-  timeout = 1000;
-
-  while (0 == waitpid(my_pid, &status, WNOHANG))
-  {
-    if (--timeout < 0)
-    {
-      perror("timeout");
-      return -1;
-    }
-    sleep(1);
-  }
-  printf("%s WEXITSTATUS %d WIFEXIED %d [status %d]\n",
-         my_argv[0], WEXITSTATUS(status), WIFEXITED(status), status);
-
-  if (1 != WIFEXITED(status) || 0 != WEXITSTATUS(status))
-  {
-    perror("%s failed, halt system");
-    return -1;
-  }
-#endif
-  return 0;
-}
-*/
 
 int main(int argc, char *argv[])
 {
@@ -130,6 +84,14 @@ int main(int argc, char *argv[])
   int y2_orig = 32;
   int letter_spacing = 0;
   int brightness = 50;
+
+  int opt;
+  	while ((opt = getopt(argc, argv, "b:")) != -1) {
+    		switch (opt) {
+		    case 'b': brightness = atoi(optarg); break;
+		    default: break;
+		}
+	  }
 
   rgb_matrix::Font font_time;
   if (!font_time.LoadFont(bdf_font_file_time))
@@ -179,24 +141,12 @@ int main(int argc, char *argv[])
   signal(SIGTERM, InterruptHandler);
   signal(SIGINT, InterruptHandler);
 
-  int x = 0;
-  int temp_hour = 0;
-  int temp_min = 0;
-  //const char *path_imageviewer = "sudo ./home/watch/DigitalLEDWatch/led-image-viewer";
-  //const char *duration_animation = "-t10";
-  //const char *sudo = "/usr/bin/sudo";
-
   while (!interrupt_received)
   {
     localtime_r(&next_time.tv_sec, &tm);
     strftime(time_buffer, sizeof(time_buffer), time_format, &tm);
     strftime(date_buffer, sizeof(date_buffer), date_format, &tm);
     offscreen->Fill(bg_color.r, bg_color.g, bg_color.b);
-
-    if (tm.tm_hour == 10 && tm.tm_min == 42 && x == 0)
-    {
-     
-    }
 
     //get length of text to center and put color to 0 0 0
     int length = rgb_matrix::DrawText(offscreen, font_time, x1, y1,
@@ -230,11 +180,6 @@ int main(int argc, char *argv[])
     offscreen = matrix->SwapOnVSync(offscreen);
 
     next_time.tv_sec += 1;
-
-    if (tm.tm_hour != temp_hour && tm.tm_min != temp_min)
-    {
-      x = 0;
-    }
   }
 
   // Finished. Shut down the RGB matrix.
