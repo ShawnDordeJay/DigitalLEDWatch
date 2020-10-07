@@ -13,15 +13,14 @@ start_service = 'systemctl start watch.service'
 stop_service = 'systemctl stop watch.service'
 brightness_std = 50
 brightness_sunset = 8
-# x is for gif -> just show gif once per minute and not in loop
-x = 0
-temp_minute = 0
+# is for gif -> just show gif once per minute and not in loop
+temp_minute = 999
 
 # load database
 mydb = mysql.connector.connect(
     host='localhost',
     user='pi',
-    password='<enter your password>',
+    password='<enter password>',
     database='watch'
 )
 
@@ -46,7 +45,6 @@ def start_stop_gif(gifname):
     os.system('{} -t15 {}{}'.format(path_imageviewer, path_gif, gifname))
     os.system(start_service)
     temp_minute = DATETIME.now().minute
-    x = 1
 
 # start watch service once
 os.system(start_service)
@@ -64,12 +62,22 @@ while 1:
         entry_minute_sunset = (row[2].seconds % 3600) // 60
 
 	#sunrise
-        if entry_year == DATETIME.now().year and entry_month == DATETIME.now().month and entry_day == DATETIME.now().day and entry_hour_sunrise == DATETIME.now().hour and entry_minute_sunrise == DATETIME.now().minute and x == 0:
+        if entry_year == DATETIME.now().year and \
+           entry_month == DATETIME.now().month and \
+           entry_day == DATETIME.now().day and \
+           entry_hour_sunrise == DATETIME.now().hour and \
+           entry_minute_sunrise == DATETIME.now().minute and \
+           temp_minute != DATETIME.now().minute:
             change_brightness(brightness_std)
             start_stop_gif('sunrise.gif')
 
 	#sunset
-        if entry_year == DATETIME.now().year and entry_month == DATETIME.now().month and entry_day == DATETIME.now().day and entry_hour_sunset == DATETIME.now().hour and entry_minute_sunset == DATETIME.now().minute and x == 0:
+        if entry_year == DATETIME.now().year and \
+           entry_month == DATETIME.now().month and \
+           entry_day == DATETIME.now().day and \
+           entry_hour_sunset == DATETIME.now().hour and \
+           entry_minute_sunset == DATETIME.now().minute and \
+           temp_minute != DATETIME.now().minute:
             change_brightness(brightness_sunset)
             start_stop_gif('sunset.gif')
 
@@ -85,7 +93,9 @@ while 1:
             entry_minute = (row[1].seconds % 3600) // 60
             entry_second = row[1].seconds % 60
 
-            if DATETIME.now().hour == entry_hour and DATETIME.now().minute == entry_minute and x == 0:
+            if DATETIME.now().hour == entry_hour and \
+               DATETIME.now().minute == entry_minute and \
+               temp_minute != DATETIME.now().minute:
                 start_stop_gif(row[2])
 
         else:
@@ -99,21 +109,32 @@ while 1:
             entry_second = row[1].seconds % 60
 
             # every year on this date, display the gif every full hour e.g birthday
-            if entry_year == 9999 and entry_month == DATETIME.now().month and entry_day == DATETIME.now().day and entry_hour == 0 and entry_minute == 0 and x == 0:
+            if entry_year == 9999 and \
+               entry_month == DATETIME.now().month and \
+               entry_day == DATETIME.now().day and \
+               entry_hour == 0 and \
+               entry_minute == 0 and \
+               temp_minute != DATETIME.now().minute:
                 if DATETIME.now().minute == 0:
                     start_stop_gif(row[2])
 
             # every year on this date, display once on defined time e.g
-            elif entry_year == 9999 and entry_month == DATETIME.now().month and entry_day == DATETIME.now().day and entry_hour == DATETIME.now().hour and entry_minute == DATETIME.now().minute and x == 0:
+            elif entry_year == 9999 and \
+                 entry_month == DATETIME.now().month and \
+                 entry_day == DATETIME.now().day and \
+                 entry_hour == DATETIME.now().hour and \
+                 entry_minute == DATETIME.now().minute and \
+                 temp_minute != DATETIME.now().minute:
                start_stop_gif(row[2])
 
             # defined date and time
-            elif entry_year == DATETIME.now().year and entry_month == DATETIME.now().month and entry_day == DATETIME.now().day and entry_hour == DATETIME.now().hour and entry_minute == DATETIME.now().minute and x == 0:
+            elif entry_year == DATETIME.now().year and \
+                 entry_month == DATETIME.now().month and \
+                 entry_day == DATETIME.now().day and \
+                 entry_hour == DATETIME.now().hour and \
+                 entry_minute == DATETIME.now().minute and \
+                 temp_minute != DATETIME.now().minute:
                 start_stop_gif(row[2])
-
-        # check if gif already displayed this minute otherwise change x back to 0
-        if temp_minute != DATETIME.now().minute:
-            x = 0
 
         # chill a little bit till checking again
         time.sleep(0.25)
